@@ -1,0 +1,73 @@
+{% comment %} Table-first server list: search, status filter, columns. {% endcomment %}
+<div class="cl-page">
+    <h1 class="cl-title">My Servers</h1>
+    <p class="cl-sub">Your servers and servers that your friends have shared with you.</p>
+
+    <div class="cl-toolbar">
+        <label class="cl-search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input id="cl-search" type="text" placeholder="Search for a server, e.g. Minecraft Let's Play." />
+        </label>
+        <select id="cl-filter" class="cl-filter">
+            <option value="">Filter by</option>
+            <option value="online">Online</option>
+            <option value="offline">Offline</option>
+            <option value="installing">Installing</option>
+        </select>
+    </div>
+
+    <div class="cl-table">
+        <div class="cl-thead">
+            <span>Name</span>
+            <span>Game</span>
+            <span>Status</span>
+            <span>Memory</span>
+            <span>Players</span>
+            <span></span>
+        </div>
+        {% for server in servers %}
+            <a
+                class="cl-row"
+                href="/servers/{{ server.uid }}"
+                data-name="{{ server.name | downcase }} {{ server.workload | downcase }}"
+                data-status="{{ server.status }}"
+            >
+                <span class="cl-name">
+                    {% if server.artUrl %}
+                        <img class="cl-art" src="{{ server.artUrl }}" alt="" />
+                    {% else %}
+                        <span class="cl-art-fallback">{{ server.name | slice: 0 | upcase }}</span>
+                    {% endif %}
+                    <span>{{ server.name }}</span>
+                </span>
+                <span class="cl-dim">{{ server.workload }}</span>
+                <span class="cl-pill cl-pill-{{ server.status }}">{{ server.status }}</span>
+                <span class="cl-dim">
+                    {% if server.memoryTotalMb %}{{ server.memoryTotalMb | divided_by: 1024 }} GB{% else %}—{% endif %}
+                </span>
+                <span class="cl-dim">
+                    {% if server.players contains "—" %}—{% else %}{{ server.players }} players{% endif %}
+                </span>
+                <span class="cl-dots">⋮</span>
+            </a>
+        {% else %}
+            <p class="cl-empty">No servers yet — they show up here right after checkout.</p>
+        {% endfor %}
+    </div>
+
+    <p id="cl-count" class="cl-count">
+        Showing {{ servers | size }} server{% if servers.size != 1 %}s{% endif %}
+    </p>
+
+    {% for embed in embeds %}
+        <iframe
+            src="{{ embed.url }}"
+            title="{{ embed.name }}"
+            style="width: 100%; border: 0; min-height: 260px; border-radius: 12px"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+    {% endfor %}
+</div>

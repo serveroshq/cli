@@ -1,0 +1,156 @@
+{% comment %}
+    Server overview — theme-owned. Data: server (name, uid, status, workload,
+    region, players, ip, port, uptime, memoryTotalMb, artUrl, machineOnline,
+    consoleLines, cpu, memoryUsedMb), sections, permissions, isOwner.
+    data-power buttons are wired to the real power API by theme.js.
+{% endcomment %}
+
+{% assign game = server.workload | downcase %}
+{% if game contains 'minecraft' %}
+    <div class="cl-hero-art" style="background-image: url('https://images.steamusercontent.com/ugc/2310974141604980016/B4EF3A7A2D1772DE26B1A6F51CE33A04FD8BB917/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false')"></div>
+{% endif %}
+
+{% comment %} Extra hero chips — theme.js grafts these beside Running/Minecraft. {% endcomment %}
+<div data-hero-chips style="display: none">
+    <span class="cl-hero-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-7 1.7-7 4v2h14v-2c0-2.3-3.7-4-7-4Zm8-2.2a3.4 3.4 0 0 0 0-6.6 5.9 5.9 0 0 1 0 6.6ZM18.9 13.4c1.9.9 3.1 2.2 3.1 3.6v2h-3v-2c0-1.4-.4-2.6-1.1-3.6h1Z"/></svg>
+        {% if server.players contains "—" %}0/? players{% else %}{{ server.players | replace: " / ", "/" }} players{% endif %}
+    </span>
+    <span class="cl-hero-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1Z"/></svg>
+        {% if server.memoryTotalMb %}{{ server.workload }} · {{ server.memoryTotalMb | divided_by: 1024 }} GB{% else %}{{ server.workload }}{% endif %}
+    </span>
+</div>
+
+<div class="cl-server">
+    <div class="cl-cols">
+        <section class="cl-card">
+            <div class="cl-card-head">
+                <h2 class="cl-card-title">Server Information</h2>
+            </div>
+
+            <div class="cl-instance">
+                {% if server.artUrl %}
+                    <img class="cl-art" src="{{ server.artUrl }}" alt="" />
+                {% else %}
+                    <span class="cl-art-fallback">{{ server.workload | slice: 0 | upcase }}</span>
+                {% endif %}
+                <div>
+                    <strong>{{ server.workload }}</strong>
+                    <span class="cl-pill cl-pill-{{ server.status }}">{{ server.status }}</span>
+                </div>
+                <div class="cl-instance-stats">
+                    <div class="cl-mini">
+                        <span>CPU</span>
+                        <strong>{% if server.cpu %}{{ server.cpu }}%{% elsif server.status == 'online' %}0%{% else %}—{% endif %}</strong>
+                    </div>
+                    <div class="cl-mini">
+                        <span>Memory</span>
+                        <strong>
+                            {% if server.memoryTotalMb %}
+                                {% if server.memoryUsedMb %}{{ server.memoryUsedMb | divided_by: 1024.0 | round: 1 }}{% else %}0{% endif %} / {{ server.memoryTotalMb | divided_by: 1024 }} GB
+                            {% else %}—{% endif %}
+                        </strong>
+                    </div>
+                    <div class="cl-mini">
+                        <span>Players</span>
+                        <strong>{% if server.players contains "—" %}—{% else %}{{ server.players }}{% endif %}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cl-info-rows">
+                <div class="cl-info-row">
+                    <span>Server Name</span>
+                    <strong>{{ server.name }}</strong>
+                    {% if isOwner %}
+                        <button type="button" class="cl-row-btn" data-action="rename" aria-label="Rename server">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21.2 6.4 17.6 2.8a1.8 1.8 0 0 0-2.6 0L3 14.8V21h6.2l12-12a1.8 1.8 0 0 0 0-2.6ZM8.4 19H5v-3.4l8.6-8.6 3.4 3.4L8.4 19Z"/></svg>
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="cl-info-row">
+                    <span>Players</span>
+                    <strong>{% if server.players contains "—" %}—{% else %}{{ server.players }}{% endif %}</strong>
+                </div>
+                <div class="cl-info-row">
+                    <span>Server Address</span>
+                    <strong>{% if server.ip %}{{ server.ip }}:{{ server.port }}{% else %}—{% endif %}</strong>
+                    {% if server.ip %}
+                        <button type="button" class="cl-row-btn" data-action="copy" data-copy="{{ server.ip }}:{{ server.port }}" aria-label="Copy address">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v13h2V3h12V1Zm4 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h12v14Z"/></svg>
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="cl-info-row">
+                    <span>Region</span>
+                    <strong>
+                        {% case server.region %}
+                            {% when 'eu-central' %}{% assign flag = 'de' %}
+                            {% when 'eu-west' %}{% assign flag = 'gb' %}
+                            {% when 'us-east' or 'us-central' or 'us-west' %}{% assign flag = 'us' %}
+                            {% when 'sa-east' %}{% assign flag = 'br' %}
+                            {% when 'asia-se' %}{% assign flag = 'sg' %}
+                            {% when 'asia-ne' %}{% assign flag = 'jp' %}
+                            {% when 'oceania' %}{% assign flag = 'au' %}
+                            {% else %}{% assign flag = nil %}
+                        {% endcase %}
+                        {% if flag %}<img class="cl-flag" src="https://flagcdn.com/w20/{{ flag }}.png" srcset="https://flagcdn.com/w40/{{ flag }}.png 2x" alt="" />{% endif %}
+                        {{ server.region | upcase | default: "—" }}
+                    </strong>
+                </div>
+                <div class="cl-info-row">
+                    <span>Memory</span>
+                    <strong>{% if server.memoryTotalMb %}{{ server.memoryTotalMb | divided_by: 1024 }} GB{% else %}—{% endif %}</strong>
+                </div>
+                <div class="cl-info-row">
+                    <span>Uptime</span>
+                    <strong>{{ server.uptime | default: "—" }}</strong>
+                </div>
+            </div>
+
+            <div class="cl-info-actions">
+                <a class="cl-btn cl-btn-dim" href="#instances">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.2 6.4 17.6 2.8a1.8 1.8 0 0 0-2.6 0L3 14.8V21h6.2l12-12a1.8 1.8 0 0 0 0-2.6ZM8.4 19H5v-3.4l8.6-8.6 3.4 3.4L8.4 19Z"/></svg>
+                    Edit Server Type
+                </a>
+                <a class="cl-btn cl-btn-dim" href="/billing">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.7l-2-3.4a.5.5 0 0 0-.6-.2l-2.5 1a7.7 7.7 0 0 0-1.7-1L14.4 2.4a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4L9 5.1a7.7 7.7 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.4a.5.5 0 0 0 .1.7L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.7l2 3.4c.1.2.4.3.6.2l2.5-1a7.7 7.7 0 0 0 1.7 1l.4 2.7c0 .2.2.4.5.4h4c.2 0 .4-.2.5-.4l.4-2.7a7.7 7.7 0 0 0 1.7-1l2.5 1c.2.1.5 0 .6-.2l2-3.4a.5.5 0 0 0-.1-.7L19.4 13ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/></svg>
+                    Manage Plan
+                </a>
+            </div>
+        </section>
+
+        <section class="cl-card">
+            <div class="cl-card-head">
+                <h2 class="cl-card-title">Console</h2>
+                <a class="cl-link" href="#console">Full Server Log</a>
+            </div>
+
+            <div class="cl-console" data-console-scroll>
+                {% for line in server.consoleLines %}
+                    <div class="cl-console-line">{{ line }}</div>
+                {% else %}
+                    <div class="cl-console-line cl-console-dim">Waiting for console output…</div>
+                {% endfor %}
+            </div>
+
+            <div class="cl-power">
+                <button type="button" class="cl-btn cl-btn-green" data-power="start">Start</button>
+                <button type="button" class="cl-btn cl-btn-dim" data-power="restart">Restart</button>
+                {% if server.status == 'stopping' %}
+                    <button type="button" class="cl-btn cl-btn-red" data-power="kill">Force Stop</button>
+                {% else %}
+                    <button type="button" class="cl-btn cl-btn-red" data-power="stop">Stop</button>
+                {% endif %}
+            </div>
+            <p class="cl-hint" data-power-hint>
+                {% if server.machineOnline %}
+                    Power actions apply within a few seconds.
+                {% else %}
+                    The machine is offline right now — power actions will fail until it's back.
+                {% endif %}
+            </p>
+        </section>
+    </div>
+</div>
