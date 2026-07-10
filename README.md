@@ -37,7 +37,7 @@ any time.
 | Command                          | What it does                                                |
 | -------------------------------- | ----------------------------------------------------------- |
 | `serveros login --api … --key …` | Save panel credentials to `~/.serveros`                     |
-| `serveros theme init [dir]`      | Scaffold `theme.json` + `theme.css`                         |
+| `serveros theme init [dir]`      | Scaffold a theme (config, assets, templates)                |
 | `serveros theme dev`             | Watch the theme dir, push the draft on each save            |
 | `serveros theme push`            | Push the local theme as the draft                           |
 | `serveros theme pull`            | Download the panel's theme (`--published` for the live one) |

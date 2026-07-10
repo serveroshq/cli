@@ -20,6 +20,6 @@ jobs:
       - run: node bin/serveros.js help
       - name: Validate example themes
         run: |
-          for f in examples/*/theme.json; do
+          for f in examples/*/config/settings.json; do
               node -e "JSON.parse(require('fs').readFileSync('$f', 'utf8'))" && echo "OK $f"
           done
