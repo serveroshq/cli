@@ -1,0 +1,25 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, 20, 22]
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node }}
+            - run: node --check bin/serveros.js
+            - run: node bin/serveros.js help
+            - name: Validate example themes
+              run: |
+                  for f in examples/*/theme.json; do
+                      node -e "JSON.parse(require('fs').readFileSync('$f', 'utf8'))" && echo "OK $f"
+                  done

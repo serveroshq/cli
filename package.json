@@ -1,0 +1,39 @@
+{
+    "name": "@serveros/cli",
+    "version": "0.1.0",
+    "description": "ServerOS developer CLI — build and ship themes for your Foundry customer panel from your own editor.",
+    "keywords": [
+        "serveros",
+        "foundry",
+        "game-servers",
+        "theme",
+        "cli"
+    ],
+    "homepage": "https://github.com/serveroshq/cli#readme",
+    "bugs": "https://github.com/serveroshq/cli/issues",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/serveroshq/cli.git"
+    },
+    "license": "MIT",
+    "author": "ServerOS (https://serveros.com)",
+    "type": "module",
+    "bin": {
+        "serveros": "bin/serveros.js"
+    },
+    "files": [
+        "bin",
+        "examples",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "check": "node --check bin/serveros.js && node bin/serveros.js help"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
