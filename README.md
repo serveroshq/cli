@@ -1,9 +1,9 @@
 # ServerOS CLI
 
 Build a custom look for your [ServerOS Foundry](https://serveros.com) customer
-panel from your own editor — write design tokens and CSS locally, preview a
-draft on your live panel, and publish when it's ready. No panel source code
-required.
+panel from your own editor — design tokens, CSS, JavaScript, and Liquid
+templates, developed locally, previewed as a draft on your live panel, and
+published when ready. No panel source code required.
 
 ```bash
 npm install -g @serveros/cli
@@ -34,16 +34,16 @@ any time.
 
 ## Commands
 
-| Command                          | What it does                                     |
-| -------------------------------- | ------------------------------------------------ |
-| `serveros login --api … --key …` | Save panel credentials to `~/.serveros`          |
-| `serveros theme init [dir]`      | Scaffold `theme.json` + `theme.css`              |
-| `serveros theme dev`             | Watch the theme dir, push the draft on each save |
-| `serveros theme push`            | Push the local theme as the draft                |
+| Command                          | What it does                                                |
+| -------------------------------- | ----------------------------------------------------------- |
+| `serveros login --api … --key …` | Save panel credentials to `~/.serveros`                     |
+| `serveros theme init [dir]`      | Scaffold `theme.json` + `theme.css`                         |
+| `serveros theme dev`             | Watch the theme dir, push the draft on each save            |
+| `serveros theme push`            | Push the local theme as the draft                           |
 | `serveros theme pull`            | Download the panel's theme (`--published` for the live one) |
-| `serveros theme publish`         | Copy the draft to the live panel                 |
-| `serveros theme status`          | Show draft/published state                       |
-| `serveros theme reset`           | Remove the theme, back to stock                  |
+| `serveros theme publish`         | Copy the draft to the live panel                            |
+| `serveros theme status`          | Show draft/published state                                  |
+| `serveros theme reset`           | Remove the theme, back to stock                             |
 
 Options: `--dir <path>` theme directory, `--api <url>` panel API base,
 `--key <key>` organization API key, `--insecure` accept self-signed
@@ -51,19 +51,54 @@ certificates (local panels only).
 
 ## Theme anatomy
 
-A theme is two files:
+A theme is a directory:
 
-| File         | What it is                                                                               |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| `theme.json` | Design tokens. Each token becomes a CSS variable on the panel (`primary` → `--primary`). |
-| `theme.css`  | Custom CSS, injected after the panel's own styles.                                       |
+| Path                   | What it is                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| `config/settings.json` | Design tokens. Each token becomes a CSS variable on the panel (`primary` → `--primary`). |
+| `assets/theme.css`     | Custom CSS, injected after the panel's own styles.                                       |
+| `assets/theme.js`      | Custom JavaScript, runs on every panel page.                                             |
+| `templates/*.liquid`   | [Liquid](https://liquidjs.com) templates that replace themable panel surfaces.           |
 
 Token names must match `^[a-z][a-z0-9-]{0,49}$` — anything else is dropped
 server-side (the CLI warns you first).
 
 See [`examples/ember`](examples/ember) for a complete reskin — amber on
-charcoal-bronze, square corners, and custom CSS effects — built with nothing
-but these two files.
+charcoal-bronze, square corners, and custom CSS effects.
+
+## Liquid templates
+
+Each `templates/<surface>.liquid` file takes over one panel surface:
+
+| Surface   | Replaces                        | Data available                          |
+| --------- | ------------------------------- | --------------------------------------- |
+| `servers` | The whole customer dashboard    | `servers`, `embeds`, `tenant`, `viewer` |
+| `header`  | A region above every panel page | `tenant`, `viewer`                      |
+| `footer`  | A region below every panel page | `tenant`, `viewer`                      |
+
+Server objects carry `uid`, `name`, `workload`, `status`, `region`,
+`players`, `cpu`, `memoryUsedMb`, `memoryTotalMb`, `ip`, `port`, `artUrl`,
+`shared`, and `owner`. Link to a server with `/servers/{{ server.uid }}`.
+
+Style templates with your own classes in `assets/theme.css` — the panel's
+internal utility classes are compiled per-build and not available to
+template markup.
+
+Interactive surfaces (live console, file manager, backups) are rendered by
+the panel engine and are not templatable; restyle them with tokens/CSS, or
+reach into them with theme JavaScript.
+
+## Theme JavaScript
+
+`assets/theme.js` runs once per full page load on every panel page:
+
+- `window.ServerOS` → `{ tenant, viewer }`
+- `serveros:ready` event fires right after your script runs
+- `serveros:navigate` event fires after client-side navigations
+  (`event.detail.url`) — re-apply DOM work there
+
+Theme JS is scoped to your own panel and your own customers, exactly like
+theme CSS.
 
 ## Token reference
 

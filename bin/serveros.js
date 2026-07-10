@@ -9,21 +9,32 @@
  *   serveros theme dev        # push draft on every save + preview URL
  *   serveros theme publish    # ship it to customers
  *
+ * A theme is a directory:
+ *
+ *   config/settings.json     design tokens (become CSS variables)
+ *   assets/theme.css         custom CSS, injected after panel styles
+ *   assets/theme.js          custom JS, runs on every panel page
+ *   templates/*.liquid       Liquid templates for themable surfaces
+ *
  * Zero dependencies; Node 18+ (built-in fetch).
  */
 
 import {
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   watch,
   writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 
 const CREDENTIALS_PATH = join(homedir(), ".serveros", "credentials.json");
 const TOKEN_NAME_PATTERN = /^[a-z][a-z0-9-]{0,49}$/;
+
+/** Panel surfaces a templates/*.liquid file may target. */
+const TEMPLATE_SURFACES = ["servers", "header", "footer"];
 
 const args = process.argv.slice(2);
 const flags = {};
@@ -127,25 +138,71 @@ function themeDir() {
   return resolve(flags.dir ?? ".");
 }
 
-function readTheme(dir) {
-  const tokensPath = join(dir, "theme.json");
-  const cssPath = join(dir, "theme.css");
+function readOptional(path) {
+  return existsSync(path) ? readFileSync(path, "utf8") : null;
+}
 
-  if (!existsSync(tokensPath)) {
+function readTheme(dir) {
+  const settingsPath = join(dir, "config", "settings.json");
+  const templatesDir = join(dir, "templates");
+  const legacyTokensPath = join(dir, "theme.json");
+
+  const isThemeDir =
+    existsSync(settingsPath) ||
+    existsSync(templatesDir) ||
+    existsSync(join(dir, "assets"));
+
+  if (!isThemeDir && !existsSync(legacyTokensPath)) {
     fail(
-      `No theme.json in ${dir}. Run \`serveros theme init\` first, or pass --dir.`,
+      `No theme in ${dir}. Run \`serveros theme init\` first, or pass --dir.`,
     );
   }
 
-  let parsed;
+  let tokens = {};
+  let css = null;
+  let js = null;
+  const templates = {};
 
-  try {
-    parsed = JSON.parse(readFileSync(tokensPath, "utf8"));
-  } catch (error) {
-    fail(`theme.json is not valid JSON: ${error.message}`);
+  if (isThemeDir) {
+    if (existsSync(settingsPath)) {
+      try {
+        tokens = JSON.parse(readFileSync(settingsPath, "utf8")).tokens ?? {};
+      } catch (error) {
+        fail(`config/settings.json is not valid JSON: ${error.message}`);
+      }
+    }
+
+    css = readOptional(join(dir, "assets", "theme.css"));
+    js = readOptional(join(dir, "assets", "theme.js"));
+
+    if (existsSync(templatesDir)) {
+      for (const file of readdirSync(templatesDir)) {
+        if (!file.endsWith(".liquid")) {
+          continue;
+        }
+
+        const surface = basename(file, ".liquid");
+
+        if (!TEMPLATE_SURFACES.includes(surface)) {
+          log(
+            `⚠ templates/${file} skipped — themable surfaces are: ${TEMPLATE_SURFACES.join(", ")}`,
+          );
+          continue;
+        }
+
+        templates[surface] = readFileSync(join(templatesDir, file), "utf8");
+      }
+    }
+  } else {
+    // Legacy single-file layout (theme.json + theme.css).
+    try {
+      tokens = JSON.parse(readFileSync(legacyTokensPath, "utf8")).tokens ?? {};
+    } catch (error) {
+      fail(`theme.json is not valid JSON: ${error.message}`);
+    }
+
+    css = readOptional(join(dir, "theme.css"));
   }
-
-  const tokens = parsed.tokens ?? {};
 
   for (const name of Object.keys(tokens)) {
     if (!TOKEN_NAME_PATTERN.test(name)) {
@@ -155,17 +212,24 @@ function readTheme(dir) {
     }
   }
 
-  const css = existsSync(cssPath) ? readFileSync(cssPath, "utf8") : null;
-
-  return { tokens, css };
+  return { tokens, css, js, templates };
 }
 
 function writeTheme(dir, theme) {
+  mkdirSync(join(dir, "config"), { recursive: true });
+  mkdirSync(join(dir, "assets"), { recursive: true });
+  mkdirSync(join(dir, "templates"), { recursive: true });
+
   writeFileSync(
-    join(dir, "theme.json"),
+    join(dir, "config", "settings.json"),
     `${JSON.stringify({ tokens: theme?.tokens ?? {} }, null, 4)}\n`,
   );
-  writeFileSync(join(dir, "theme.css"), theme?.css ?? "");
+  writeFileSync(join(dir, "assets", "theme.css"), theme?.css ?? "");
+  writeFileSync(join(dir, "assets", "theme.js"), theme?.js ?? "");
+
+  for (const [surface, template] of Object.entries(theme?.templates ?? {})) {
+    writeFileSync(join(dir, "templates", `${surface}.liquid`), template);
+  }
 }
 
 async function login() {
@@ -196,32 +260,177 @@ const STARTER_TOKENS = {
 };
 
 const STARTER_CSS = `/*
- * Custom CSS for your customer panel. Injected after the panel's own
- * styles, so anything here wins. Design tokens live in theme.json and
- * are available as CSS variables: var(--primary), var(--radius), ...
+ * Theme stylesheet — injected after the panel's own styles, so anything
+ * here wins. Tokens from config/settings.json are available as CSS
+ * variables: var(--primary), var(--radius), ...
+ *
+ * Style your Liquid templates with your own classes; the panel's utility
+ * classes are compiled per-build and are not available to templates.
  */
 
-/* Example: give the whole panel a subtle brand tint on hover rows.
-[data-slot='sidebar'] a:hover {
-    color: var(--primary);
+.theme-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
 }
-*/
+
+.theme-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.theme-subtitle {
+    font-size: 13px;
+    color: var(--muted-foreground, #a1a2aa);
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.theme-card {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    background: var(--card, #14151b);
+    border-radius: var(--radius, 0.5rem);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+}
+
+.theme-card:hover {
+    border-color: var(--primary, #7a5fff);
+}
+
+.theme-art {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.theme-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.theme-meta {
+    font-size: 12px;
+    color: var(--muted-foreground, #a1a2aa);
+}
+
+.theme-status {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.theme-status-online {
+    color: #33df69;
+}
+
+.theme-status-offline {
+    color: #ff5f6b;
+}
+
+.theme-status-installing {
+    color: var(--primary, #7a5fff);
+}
+
+.theme-empty {
+    padding: 48px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted-foreground, #a1a2aa);
+}
+`;
+
+const STARTER_JS = `/*
+ * Theme JavaScript — runs once per full page load, on every panel page.
+ *
+ * window.ServerOS         -> { tenant, viewer }
+ * 'serveros:ready'        -> fired right after this script runs
+ * 'serveros:navigate'     -> fired after client-side navigations; re-apply
+ *                            DOM changes here (detail: { url })
+ */
+
+// window.addEventListener('serveros:navigate', (event) => {
+//     console.log('navigated to', event.detail.url);
+// });
+`;
+
+const STARTER_SERVERS = `{% comment %}
+    Your servers page — this template fully replaces the stock dashboard.
+    Data: servers, embeds, tenant, viewer.
+    Server fields: uid, name, workload, status, region, players, cpu,
+    memoryUsedMb, memoryTotalMb, ip, port, artUrl, shared, owner.
+{% endcomment %}
+<div class="theme-page">
+    <h1 class="theme-title">{{ tenant.name }}</h1>
+    <p class="theme-subtitle">
+        Welcome back{% if viewer %}, {{ viewer.name | split: " " | first }}{% endif %}
+        — {{ servers | size }} server{% if servers.size != 1 %}s{% endif %} on your account.
+    </p>
+
+    <div class="theme-grid">
+        {% for server in servers %}
+            <a class="theme-card" href="/servers/{{ server.uid }}">
+                {% if server.artUrl %}
+                    <img class="theme-art" src="{{ server.artUrl }}" alt="" />
+                {% endif %}
+                <span class="theme-card-body">
+                    <strong>{{ server.name }}</strong>
+                    <span class="theme-meta">
+                        {{ server.workload }}{% if server.ip %} · {{ server.ip }}:{{ server.port }}{% endif %}
+                    </span>
+                    <span class="theme-status theme-status-{{ server.status }}">{{ server.status }}</span>
+                </span>
+            </a>
+        {% else %}
+            <p class="theme-empty">No servers yet — they appear here right after checkout.</p>
+        {% endfor %}
+    </div>
+
+    {% for embed in embeds %}
+        <iframe
+            src="{{ embed.url }}"
+            title="{{ embed.name }}"
+            style="width: 100%; border: 0; min-height: 260px"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+    {% endfor %}
+</div>
 `;
 
 function init() {
   const dir = resolve(positional[2] ?? flags.dir ?? ".");
 
-  mkdirSync(dir, { recursive: true });
-
-  if (existsSync(join(dir, "theme.json")) && !flags.force) {
-    fail(`${dir} already has a theme.json — pass --force to overwrite.`);
+  if (existsSync(join(dir, "config", "settings.json")) && !flags.force) {
+    fail(`${dir} already has a theme — pass --force to overwrite.`);
   }
 
-  writeTheme(dir, { tokens: STARTER_TOKENS, css: STARTER_CSS });
+  writeTheme(dir, {
+    tokens: STARTER_TOKENS,
+    css: STARTER_CSS,
+    js: STARTER_JS,
+    templates: { servers: STARTER_SERVERS },
+  });
 
   log(`✔ Theme scaffolded in ${dir}`);
-  log("  theme.json — design tokens (become CSS variables on the panel)");
-  log("  theme.css  — custom CSS, injected after the panel styles");
+  log("  config/settings.json      design tokens (become CSS variables)");
+  log("  assets/theme.css          custom CSS, injected after panel styles");
+  log("  assets/theme.js           custom JS, runs on every panel page");
+  log(
+    `  templates/*.liquid        Liquid templates (${TEMPLATE_SURFACES.join(", ")})`,
+  );
   log("");
   log("Next: serveros theme dev   (from inside the theme directory)");
 }
@@ -264,14 +473,29 @@ async function publish() {
   log(`  Live panel: ${result.preview_url.replace("/?theme=draft", "")}`);
 }
 
+function describe(state) {
+  if (!state) {
+    return "—";
+  }
+
+  const parts = [
+    `${Object.keys(state.tokens ?? {}).length} tokens`,
+    state.css ? `${state.css.length}B CSS` : "no CSS",
+    state.js ? `${state.js.length}B JS` : "no JS",
+    `${Object.keys(state.templates ?? {}).length} templates`,
+  ];
+
+  return parts.join(", ");
+}
+
 async function status() {
   const state = await request("GET", "/theme");
 
   log(
-    `Draft:     ${state.draft ? `${Object.keys(state.draft.tokens ?? {}).length} tokens, ${state.draft.css ? `${state.draft.css.length} bytes of CSS` : "no CSS"} (updated ${state.draft_updated_at})` : "—"}`,
+    `Draft:     ${state.draft ? `${describe(state.draft)} (updated ${state.draft_updated_at})` : "—"}`,
   );
   log(
-    `Published: ${state.published ? `${Object.keys(state.published.tokens ?? {}).length} tokens, ${state.published.css ? `${state.published.css.length} bytes of CSS` : "no CSS"} (published ${state.published_at})` : "—"}`,
+    `Published: ${state.published ? `${describe(state.published)} (published ${state.published_at})` : "—"}`,
   );
   log(`Preview:   ${state.preview_url}`);
 }
@@ -293,11 +517,7 @@ async function dev() {
 
   let timer = null;
 
-  watch(dir, (eventType, filename) => {
-    if (filename !== "theme.json" && filename !== "theme.css") {
-      return;
-    }
-
+  const schedule = (filename) => {
     clearTimeout(timer);
     timer = setTimeout(async () => {
       try {
@@ -307,14 +527,37 @@ async function dev() {
         // fail() already printed and exited on hard errors.
       }
     }, 200);
-  });
+  };
+
+  const relevant = (filename) =>
+    filename !== null &&
+    (filename.endsWith(".liquid") ||
+      filename.endsWith(".css") ||
+      filename.endsWith(".js") ||
+      filename.endsWith("settings.json") ||
+      filename === "theme.json" ||
+      filename === "theme.css");
+
+  for (const sub of ["", "config", "assets", "templates"]) {
+    const target = sub === "" ? dir : join(dir, sub);
+
+    if (!existsSync(target)) {
+      continue;
+    }
+
+    watch(target, (eventType, filename) => {
+      if (relevant(filename)) {
+        schedule(sub === "" ? filename : `${sub}/${filename}`);
+      }
+    });
+  }
 }
 
 const HELP = `ServerOS developer CLI
 
 Usage:
   serveros login --api <url> --key <sos_...>   Save panel credentials (~/.serveros)
-  serveros theme init [dir]                    Scaffold theme.json + theme.css
+  serveros theme init [dir]                    Scaffold a theme (config, assets, templates)
   serveros theme dev                           Push draft on every save, print preview URL
   serveros theme push                          Push the local theme as the draft
   serveros theme pull [--published]            Download the panel's theme into local files

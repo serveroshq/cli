@@ -9,30 +9,30 @@
 
 /* A faint heat bloom rising from the top-right of every page. */
 body {
-    background:
-        radial-gradient(
-            1100px 520px at 88% -12%,
-            rgba(255, 180, 84, 0.08),
-            transparent 60%
-        ),
-        var(--background);
+  background:
+    radial-gradient(
+      1100px 520px at 88% -12%,
+      rgba(255, 180, 84, 0.08),
+      transparent 60%
+    ),
+    var(--background);
 }
 
 /* Sidebar section labels: stamped, uppercase, ember-tinted. */
-[data-slot='sidebar-group-label'] {
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 10px;
-    color: rgba(255, 180, 84, 0.55);
+[data-slot="sidebar-group-label"] {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10px;
+  color: rgba(255, 180, 84, 0.55);
 }
 
 /* Primary actions carry a warm glow so they read as the hot path. */
-[data-slot='button'].bg-primary {
-    box-shadow: 0 0 22px rgba(255, 180, 84, 0.22);
+[data-slot="button"].bg-primary {
+  box-shadow: 0 0 22px rgba(255, 180, 84, 0.22);
 }
 
 /* Text selection matches the heat. */
 ::selection {
-    background: rgba(255, 180, 84, 0.32);
-    color: #f2e9d8;
+  background: rgba(255, 180, 84, 0.32);
+  color: #f2e9d8;
 }
