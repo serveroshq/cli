@@ -34,7 +34,7 @@ const CREDENTIALS_PATH = join(homedir(), ".serveros", "credentials.json");
 const TOKEN_NAME_PATTERN = /^[a-z][a-z0-9-]{0,49}$/;
 
 /** Panel surfaces a templates/*.liquid file may target. */
-const TEMPLATE_SURFACES = ["servers", "header", "footer"];
+const TEMPLATE_SURFACES = ["servers", "server", "header", "footer"];
 
 const args = process.argv.slice(2);
 const flags = {};

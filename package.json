@@ -1,7 +1,7 @@
 {
   "name": "@serveros/cli",
-  "version": "0.2.0",
-  "description": "ServerOS developer CLI \u2014 build and ship themes for your Foundry customer panel from your own editor.",
+  "version": "0.3.0",
+  "description": "ServerOS developer CLI — build and ship themes for your Foundry customer panel from your own editor.",
   "keywords": [
     "serveros",
     "foundry",

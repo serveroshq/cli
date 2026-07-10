@@ -70,11 +70,18 @@ charcoal-bronze, square corners, and custom CSS effects.
 
 Each `templates/<surface>.liquid` file takes over one panel surface:
 
-| Surface   | Replaces                        | Data available                          |
-| --------- | ------------------------------- | --------------------------------------- |
-| `servers` | The whole customer dashboard    | `servers`, `embeds`, `tenant`, `viewer` |
-| `header`  | A region above every panel page | `tenant`, `viewer`                      |
-| `footer`  | A region below every panel page | `tenant`, `viewer`                      |
+| Surface   | Replaces                        | Data available                                 |
+| --------- | ------------------------------- | ---------------------------------------------- |
+| `servers` | The whole customer dashboard    | `servers`, `embeds`, `tenant`, `viewer`        |
+| `server`  | A server's overview section     | `server`, `sections`, `permissions`, `isOwner` |
+| `header`  | A region above every panel page | `tenant`, `viewer`                             |
+| `footer`  | A region below every panel page | `tenant`, `viewer`                             |
+
+In a `server` template, buttons can drive the panel's real endpoints from
+theme JavaScript — e.g. `data-power="start|restart|stop"` handlers POSTing
+to `/servers/{{ server.uid }}/power` with the `XSRF-TOKEN` cookie. The live
+console stream and file manager remain engine sections (deep-link to them
+with `#console`, `#files`, ...).
 
 Server objects carry `uid`, `name`, `workload`, `status`, `region`,
 `players`, `cpu`, `memoryUsedMb`, `memoryTotalMb`, `ip`, `port`, `artUrl`,
