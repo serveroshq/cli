@@ -1,892 +1,890 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 /*
  * Near-black, one blue, table-first. No decorations.
  */
 
 body {
-  font-family:
-    "Poppins",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  background: var(--background);
+    font-family:
+        'Poppins',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    background: var(--background);
 }
 
 /* Panel decorations: gone. */
-img[src*="glow-beam"],
-img[src*="sparkle-circle"],
-div[aria-hidden="true"]:has(img[src*="glow-beam"]) {
-  display: none !important;
+img[src*='glow-beam'],
+img[src*='sparkle-circle'],
+div[aria-hidden='true']:has(img[src*='glow-beam']) {
+    display: none !important;
 }
 
-[data-slot="sidebar-group-label"] {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 11px;
-  font-weight: 700;
-  color: #6d7487;
+[data-slot='sidebar-group-label'] {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6d7487;
 }
 
 /* Chunky "filled" icons: heavier stroke + a soft self-colored fill, sized
    up slightly — the solid-icon look without swapping the icon set. */
-[data-sidebar="menu-button"] svg {
-  width: 17px;
-  height: 17px;
-  stroke-width: 2.3px;
-  fill: currentColor;
-  fill-opacity: 0.16;
+[data-sidebar='menu-button'] svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 2.3px;
+    fill: currentColor;
+    fill-opacity: 0.16;
 }
 
-[data-sidebar="menu-button"] {
-  border-radius: 10px;
-  font-weight: 500;
-  font-size: 14px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  height: auto;
-  color: #aeb2bd;
+[data-sidebar='menu-button'] {
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: auto;
+    color: #aeb2bd;
 }
 
 /* Active item: soft blue well, blue icon + label — like the reference. */
-[data-sidebar="menu-button"][data-active="true"],
-[data-sidebar="menu-button"].bg-sidebar-accent {
-  background: rgba(63, 140, 255, 0.1);
-  color: #5f9dff;
+[data-sidebar='menu-button'][data-active='true'],
+[data-sidebar='menu-button'].bg-sidebar-accent {
+    background: rgba(63, 140, 255, 0.1);
+    color: #5f9dff;
 }
 
-[data-sidebar="menu-button"][data-active="true"] svg {
-  fill-opacity: 0.22;
+[data-sidebar='menu-button'][data-active='true'] svg {
+    fill-opacity: 0.22;
 }
 
-[data-sidebar="menu-button"]:hover {
-  color: #ffffff;
+[data-sidebar='menu-button']:hover {
+    color: #ffffff;
 }
 
 ::selection {
-  background: rgba(63, 140, 255, 0.35);
-  color: #ffffff;
+    background: rgba(63, 140, 255, 0.35);
+    color: #ffffff;
 }
 
 /* --- Server detail & other engine pages -------------------------------- */
 
 /* Page titles: big and bold like the reference. */
 main h1 {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
 }
 
 /* Cards: generous 14px rounding instead of square panels. */
-main [class*="bg-card"] {
-  border-radius: 14px;
+main [class*='bg-card'] {
+    border-radius: 14px;
 }
 
 /* Buttons and inputs pick up soft rounding — but never flatten pills
    (Tailwind utilities live in a layer, so unlayered rules would win). */
-main button:not([class*="rounded-full"]),
+main button:not([class*='rounded-full']),
 main input,
 main select {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 
 /* Status/meta chips: slightly chunkier pills. */
-main [class*="rounded-full"][class*="px-2"] {
-  padding: 4px 12px;
+main [class*='rounded-full'][class*='px-2'] {
+    padding: 4px 12px;
 }
 
 /* --- Server overview (templates/server.liquid) ------------------------- */
 
 .cl-server {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 /* Dimmed game artwork behind the whole page header, fading into the bg. */
 .cl-hero-art {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 380px;
-  z-index: -1;
-  background-color: #10141d;
-  background-size: cover;
-  background-position: center 30%;
-  filter: saturate(0.85);
-  pointer-events: none;
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 380px;
+    z-index: -1;
+    background-color: #10141d;
+    background-size: cover;
+    background-position: center 30%;
+    filter: saturate(0.85);
+    pointer-events: none;
 }
 
 .cl-hero-art::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(25, 29, 41, 0.72) 0%,
-    rgba(25, 29, 41, 0.88) 55%,
-    #191d29 96%
-  );
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(25, 29, 41, 0.72) 0%,
+        rgba(25, 29, 41, 0.88) 55%,
+        #191d29 96%
+    );
 }
 
 .cl-tabs {
-  display: flex;
-  gap: 4px;
-  padding: 6px;
-  background: rgba(32, 36, 49, 0.8);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: rgba(32, 36, 49, 0.8);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
 }
 
 .cl-tabs::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .cl-tab {
-  padding: 9px 18px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #9ca0ab;
-  text-decoration: none;
-  white-space: nowrap;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #9ca0ab;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
 }
 
 .cl-tab:hover {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .cl-tab-active {
-  background: rgba(63, 140, 255, 0.14);
-  color: #6fa6ff;
+    background: rgba(63, 140, 255, 0.14);
+    color: #6fa6ff;
 }
 
 /* Byte-for-byte match of the engine's workload chip:
    rounded-full bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium
    tracking-[-0.2px] text-muted-foreground, gap-1.5, size-3.5 icon. */
 .cl-hero-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: -0.2px;
-  color: var(--muted-foreground, #8b93a7);
-  white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    color: var(--muted-foreground, #8b93a7);
+    white-space: nowrap;
 }
 
 .cl-hero-chip svg {
-  width: 14px;
-  height: 14px;
-  color: inherit;
+    width: 14px;
+    height: 14px;
+    color: inherit;
 }
 
 .cl-flag {
-  display: inline-block;
-  width: 16px;
-  height: 12px;
-  border-radius: 2px;
-  object-fit: cover;
-  margin-right: 6px;
-  vertical-align: -1px;
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+    object-fit: cover;
+    margin-right: 6px;
+    vertical-align: -1px;
 }
 
 .cl-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .cl-link {
-  font-size: 13px;
-  font-weight: 500;
-  color: #3f8cff;
-  text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3f8cff;
+    text-decoration: none;
 }
 
 .cl-link:hover {
-  color: #6fa6ff;
+    color: #6fa6ff;
 }
 
 .cl-info-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
 }
 
 .cl-banner {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  border: 1px solid rgba(63, 140, 255, 0.5);
-  border-radius: 14px;
-  background: rgba(63, 140, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid rgba(63, 140, 255, 0.5);
+    border-radius: 14px;
+    background: rgba(63, 140, 255, 0.06);
 }
 
 .cl-banner-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: rgba(63, 140, 255, 0.15);
-  font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(63, 140, 255, 0.15);
+    font-size: 18px;
 }
 
 .cl-banner-body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
 }
 
 .cl-banner-body strong {
-  font-size: 14.5px;
-  color: #ffffff;
+    font-size: 14.5px;
+    color: #ffffff;
 }
 
 .cl-banner-body span {
-  font-size: 12.5px;
-  color: #8b93a7;
+    font-size: 12.5px;
+    color: #8b93a7;
 }
 
 .cl-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 @media (max-width: 900px) {
-  .cl-cols {
-    grid-template-columns: 1fr;
-  }
+    .cl-cols {
+        grid-template-columns: 1fr;
+    }
 }
 
 .cl-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 22px;
-  background: #202431;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px;
+    background: #202431;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
 }
 
 .cl-card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .cl-instance {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px;
-  background: #2a2f40;
-  border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: #2a2f40;
+    border-radius: 12px;
 }
 
 .cl-instance > div {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .cl-instance-stats {
-  display: flex;
-  gap: 28px;
-  margin-left: auto;
-  padding-right: 8px;
-  flex-direction: row !important;
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+    padding-right: 8px;
+    flex-direction: row !important;
 }
 
 .cl-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  align-items: flex-end;
-  text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-end;
+    text-align: right;
 }
 
 .cl-mini span {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #8b93a7;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8b93a7;
 }
 
 .cl-mini strong {
-  font-size: 14.5px;
-  font-weight: 600;
-  color: #ffffff;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 @media (max-width: 720px) {
-  .cl-instance-stats {
-    display: none !important;
-  }
+    .cl-instance-stats {
+        display: none !important;
+    }
 }
 
 .cl-instance strong {
-  font-size: 14px;
-  color: #ffffff;
+    font-size: 14px;
+    color: #ffffff;
 }
 
 .cl-instance .cl-art,
 .cl-instance .cl-art-fallback {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
 }
 
 .cl-info-rows {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .cl-info-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 46px;
-  padding: 6px 2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 46px;
+    padding: 6px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 13.5px;
 }
 
 .cl-info-row span:first-child {
-  margin-right: auto;
+    margin-right: auto;
 }
 
 .cl-row-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
-  border: 0;
-  border-radius: 9px;
-  background: #2a2f40;
-  color: #aeb6c8;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 9px;
+    background: #2a2f40;
+    color: #aeb6c8;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 
 .cl-row-btn:hover {
-  background: #333952;
-  color: #ffffff;
+    background: #333952;
+    color: #ffffff;
 }
 
 .cl-row-btn.cl-copied {
-  background: rgba(55, 215, 157, 0.15);
-  color: #37d79d;
+    background: rgba(55, 215, 157, 0.15);
+    color: #37d79d;
 }
 
 .cl-info-row:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .cl-info-row span {
-  color: #8b93a7;
+    color: #8b93a7;
 }
 
 .cl-info-row strong {
-  font-weight: 500;
-  color: #ffffff;
-  text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    font-weight: 500;
+    color: #ffffff;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cl-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: 9px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    filter 0.15s ease,
-    opacity 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        filter 0.15s ease,
+        opacity 0.15s ease;
 }
 
 .cl-btn:hover {
-  filter: brightness(1.12);
+    filter: brightness(1.12);
 }
 
 .cl-btn:disabled {
-  opacity: 0.5;
-  cursor: wait;
+    opacity: 0.5;
+    cursor: wait;
 }
 
 .cl-btn-blue {
-  background: #3f8cff;
-  color: #ffffff;
+    background: #3f8cff;
+    color: #ffffff;
 }
 
 .cl-btn-green {
-  background: #21a06c;
-  color: #ffffff;
+    background: #21a06c;
+    color: #ffffff;
 }
 
 .cl-btn-red {
-  background: rgba(229, 72, 77, 0.15);
-  color: #ff7b80;
+    background: rgba(229, 72, 77, 0.15);
+    color: #ff7b80;
 }
 
 .cl-btn-dim {
-  background: #2a2f40;
-  color: #dfe3ec;
+    background: #2a2f40;
+    color: #dfe3ec;
 }
 
 .cl-power {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .cl-hint {
-  font-size: 12px;
-  color: #8b93a7;
+    font-size: 12px;
+    color: #8b93a7;
 }
 
 .cl-hint.cl-hint-ok {
-  color: #37d79d;
+    color: #37d79d;
 }
 
 .cl-hint.cl-hint-err {
-  color: #ff7b80;
+    color: #ff7b80;
 }
 
 .cl-console {
-  flex: 1;
-  min-height: 220px;
-  max-height: 340px;
-  overflow-y: auto;
-  padding: 14px 16px;
-  background: #0a0d13;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  font-family: "Roboto Mono", ui-monospace, monospace;
-  font-size: 12px;
-  line-height: 1.7;
-  color: #aeb6c8;
+    flex: 1;
+    min-height: 220px;
+    max-height: 340px;
+    overflow-y: auto;
+    padding: 14px 16px;
+    background: #0a0d13;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-family: 'Roboto Mono', ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #aeb6c8;
 }
 
 .cl-console-line {
-  white-space: pre-wrap;
-  word-break: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .cl-console-dim {
-  color: #5d6577;
+    color: #5d6577;
 }
 
 .cl-console-cta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
-  padding: 16px;
-  background: #10141d;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  font-family: "Roboto Mono", ui-monospace, monospace;
-  font-size: 13px;
-  color: #8b93a7;
-  text-decoration: none;
-  transition: color 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding: 16px;
+    background: #10141d;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-family: 'Roboto Mono', ui-monospace, monospace;
+    font-size: 13px;
+    color: #8b93a7;
+    text-decoration: none;
+    transition: color 0.15s ease;
 }
 
 .cl-console-cta:hover {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .cl-console-cta span {
-  color: #3f8cff;
+    color: #3f8cff;
 }
 
 /* --- Servers page (templates/servers.liquid) --------------------------- */
 
 .cl-page {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 32px;
 }
 
 .cl-title {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-  color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #ffffff;
 }
 
 .cl-sub {
-  margin-top: -12px;
-  font-size: 14px;
-  color: #8b93a7;
+    margin-top: -12px;
+    font-size: 14px;
+    color: #8b93a7;
 }
 
 .cl-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .cl-search {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  max-width: 460px;
-  padding: 0 16px;
-  height: 46px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: #8b93a7;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 460px;
+    padding: 0 16px;
+    height: 46px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #8b93a7;
 }
 
 .cl-search:focus-within {
-  border-color: rgba(63, 140, 255, 0.6);
+    border-color: rgba(63, 140, 255, 0.6);
 }
 
 .cl-search input {
-  flex: 1;
-  height: 100%;
-  background: transparent;
-  border: 0;
-  outline: 0;
-  font: inherit;
-  font-size: 13.5px;
-  color: #dfe3ec;
+    flex: 1;
+    height: 100%;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    font-size: 13.5px;
+    color: #dfe3ec;
 }
 
 .cl-search input::placeholder {
-  color: #5d6577;
+    color: #5d6577;
 }
 
 .cl-filter {
-  appearance: none;
-  -webkit-appearance: none;
-  height: 46px;
-  padding: 0 38px 0 16px;
-  background-color: #2a2f40;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b93a7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 500;
-  line-height: 44px;
-  color: #dfe3ec;
-  outline: 0;
-  cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    height: 46px;
+    padding: 0 38px 0 16px;
+    background-color: #2a2f40;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b93a7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 44px;
+    color: #dfe3ec;
+    outline: 0;
+    cursor: pointer;
 }
 
 .cl-filter option {
-  background: #202431;
-  color: #dfe3ec;
-  font-size: 13px;
+    background: #202431;
+    color: #dfe3ec;
+    font-size: 13px;
 }
 
 .cl-filter:focus {
-  border-color: rgba(63, 140, 255, 0.6);
+    border-color: rgba(63, 140, 255, 0.6);
 }
 
 .cl-table {
-  background: #202431;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+    background: #202431;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .cl-thead,
 .cl-row {
-  display: grid;
-  grid-template-columns: minmax(200px, 2fr) 1.2fr 1.2fr 0.8fr 1fr 40px;
-  align-items: center;
-  gap: 16px;
-  padding: 0 20px;
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) 1.2fr 1.2fr 0.8fr 1fr 40px;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px;
 }
 
 .cl-thead {
-  height: 46px;
-  background: #2a2f40;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #8b93a7;
+    height: 46px;
+    background: #2a2f40;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8b93a7;
 }
 
 .cl-row {
-  height: 62px;
-  background: transparent;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
-  text-decoration: none;
-  color: #dfe3ec;
-  font-size: 14px;
-  transition: background 0.12s ease;
+    height: 62px;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    text-decoration: none;
+    color: #dfe3ec;
+    font-size: 14px;
+    transition: background 0.12s ease;
 }
 
 .cl-row:hover {
-  background: #2a2f40;
+    background: #2a2f40;
 }
 
 .cl-name {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  font-weight: 500;
-  color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    font-weight: 500;
+    color: #ffffff;
 }
 
 .cl-name span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cl-art {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  object-fit: cover;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    object-fit: cover;
 }
 
 .cl-art-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  background: #2a2f40;
-  color: #3f8cff;
-  font-size: 13px;
-  font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: #2a2f40;
+    color: #3f8cff;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .cl-dim {
-  color: #8b93a7;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    color: #8b93a7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cl-pill {
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .cl-pill::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: currentColor;
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
 }
 
 .cl-pill-online {
-  background: rgba(55, 215, 157, 0.1);
-  color: #37d79d;
+    background: rgba(55, 215, 157, 0.1);
+    color: #37d79d;
 }
 
 .cl-pill-offline {
-  background: rgba(139, 147, 167, 0.1);
-  color: #9aa1b3;
+    background: rgba(139, 147, 167, 0.1);
+    color: #9aa1b3;
 }
 
 .cl-pill-installing {
-  background: rgba(63, 140, 255, 0.1);
-  color: #6fa6ff;
+    background: rgba(63, 140, 255, 0.1);
+    color: #6fa6ff;
 }
 
 .cl-dots {
-  justify-self: end;
-  color: #5d6577;
-  font-size: 18px;
-  letter-spacing: 2px;
+    justify-self: end;
+    color: #5d6577;
+    font-size: 18px;
+    letter-spacing: 2px;
 }
 
 .cl-count {
-  font-size: 13px;
-  color: #8b93a7;
+    font-size: 13px;
+    color: #8b93a7;
 }
 
 .cl-empty {
-  padding: 64px 24px;
-  text-align: center;
-  background: transparent;
-  font-size: 13.5px;
-  color: #8b93a7;
+    padding: 64px 24px;
+    text-align: center;
+    background: transparent;
+    font-size: 13.5px;
+    color: #8b93a7;
 }
 
 @media (max-width: 860px) {
-  .cl-thead,
-  .cl-row {
-    grid-template-columns: minmax(160px, 2fr) 1fr 40px;
-  }
+    .cl-thead,
+    .cl-row {
+        grid-template-columns: minmax(160px, 2fr) 1fr 40px;
+    }
 
-  .cl-thead span:nth-child(n + 3):not(:nth-child(6)),
-  .cl-row > *:nth-child(n + 3):not(.cl-dots):not(.cl-pill) {
-    display: none;
-  }
+    .cl-thead span:nth-child(n + 3):not(:nth-child(6)),
+    .cl-row > *:nth-child(n + 3):not(.cl-dots):not(.cl-pill) {
+        display: none;
+    }
 }
 
 /* --- Persistent section tabs (built by theme.js) ----------------------- */
 
 #cl-tabs-persist {
-  margin: 4px 0 8px;
-  flex: 0 0 auto;
+    margin: 4px 0 8px;
+    flex: 0 0 auto;
 }
 
 /* --- Console section ---------------------------------------------------- */
 
 /* Clip card children so the square terminal respects the card radius. */
-main [class*="bg-card"] {
-  overflow: hidden;
+main [class*='bg-card'] {
+    overflow: hidden;
 }
 
 /* The terminal body: theme console tone, roomier padding. */
-main div[class*="bg-[#0b0c10]"] {
-  background: #0a0d13 !important;
-  padding: 16px 18px;
+main div[class*='bg-[#0b0c10]'] {
+    background: #0a0d13 !important;
+    padding: 16px 18px;
 }
 
 /* The toolbar becomes a real header: label, filters, tools right. */
-main div:has(> div[class*="bg-[#0b0c10]"]) > div:first-child {
-  padding: 10px 16px;
-  justify-content: flex-start;
+main div:has(> div[class*='bg-[#0b0c10]']) > div:first-child {
+    padding: 10px 16px;
+    justify-content: flex-start;
 }
 
-main div:has(> div[class*="bg-[#0b0c10]"]) > div:first-child::before {
-  content: "Console";
-  margin-right: 14px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
+main div:has(> div[class*='bg-[#0b0c10]']) > div:first-child::before {
+    content: 'Console';
+    margin-right: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
 }
 
-main div:has(> div[class*="bg-[#0b0c10]"]) > div:first-child > button {
-  margin-left: 2px;
+main div:has(> div[class*='bg-[#0b0c10]']) > div:first-child > button {
+    margin-left: 2px;
 }
 
 .cl-console-filters {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-right: auto;
 }
 
 .cl-console-filters button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #8b93a7;
-  cursor: pointer;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #8b93a7;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
 }
 
 .cl-console-filters button:hover {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .cl-console-filters button.cl-cf-active {
-  background: rgba(63, 140, 255, 0.14);
-  color: #6fa6ff;
+    background: rgba(63, 140, 255, 0.14);
+    color: #6fa6ff;
 }
 
 .cl-console-filters button i {
-  font-style: normal;
-  opacity: 0.65;
+    font-style: normal;
+    opacity: 0.65;
 }
 
 /* Command input row sits on the terminal tone too. */
-main div:has(> div[class*="bg-[#0b0c10]"]) form {
-  background: #0a0d13;
-  padding: 12px 16px;
+main div:has(> div[class*='bg-[#0b0c10]']) form {
+    background: #0a0d13;
+    padding: 12px 16px;
 }
 
 /* --- Forms (server properties & friends) -------------------------------- */
 
 /* The engine's near-black fields sit too harsh on #202431 cards — pull
    them into the surface family. (Console's transparent input untouched.) */
-main input[class*="bg-[#0b0c10]"],
-main select[class*="bg-[#0b0c10]"] {
-  background: #191d29 !important;
-  border-color: rgba(255, 255, 255, 0.07) !important;
-  padding: 10px 14px;
-  border-radius: 10px !important;
+main input[class*='bg-[#0b0c10]'],
+main select[class*='bg-[#0b0c10]'] {
+    background: #191d29 !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+    padding: 10px 14px;
+    border-radius: 10px !important;
 }
 
 /* Toggles: compact track, knob that actually stays inside it. */
-main button[class*="rounded-full"][class*="px-1"] {
-  width: 52px;
-  height: 28px;
-  padding: 0 4px;
-  border-radius: 999px;
+main button[class*='rounded-full'][class*='px-1'] {
+    width: 52px;
+    height: 28px;
+    padding: 0 4px;
+    border-radius: 999px;
 }
 
-main button[class*="rounded-full"][class*="px-1"] > span {
-  width: 20px;
-  height: 20px;
+main button[class*='rounded-full'][class*='px-1'] > span {
+    width: 20px;
+    height: 20px;
 }
 
-main
-  button[class*="rounded-full"][class*="px-1"]
-  > span[class*="translate-x-7"] {
-  transform: translateX(24px);
+main button[class*='rounded-full'][class*='px-1'] > span[class*='translate-x-7'] {
+    transform: translateX(24px);
 }
