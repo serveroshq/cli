@@ -77,6 +77,10 @@ Each `templates/<surface>.liquid` file takes over one panel surface:
 | `header`  | A region above every panel page | `tenant`, `viewer`                             |
 | `footer`  | A region below every panel page | `tenant`, `viewer`                             |
 
+`server` templates also receive `server.consoleLines` (the last 40 console
+lines, ANSI-stripped, refreshed live) and live `cpu`/`memoryUsedMb`, so an
+overview can render a real console preview.
+
 In a `server` template, buttons can drive the panel's real endpoints from
 theme JavaScript — e.g. `data-power="start|restart|stop"` handlers POSTing
 to `/servers/{{ server.uid }}/power` with the `XSRF-TOKEN` cookie. The live
